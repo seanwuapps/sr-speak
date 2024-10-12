@@ -2,12 +2,50 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + TS</title>
+    <title>SR Speak</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        display: grid;
+        place-items: center;
+        height: 100vh;
+      }
+      .wrapper {
+        width: 20rem;
+      }
+      label {
+        display: block;
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+      }
+      textarea,
+      select,
+      button {
+        width: 100%;
+        border-radius: 0.5rem;
+        padding: 0.5rem;
+        margin-bottom: 1rem;
+      }
+    </style>
   </head>
   <body>
-    <div id="app"></div>
-    <script type="module" src="/src/sr-speak.ts"></script>
+    <script type="module" src="/src/example.ts"></script>
+    <div class="wrapper">
+      <form id="form" class="form">
+        <label for="input">Text to speak in Screen Readers</label>
+        <textarea name="input" rows="5" id="input"></textarea>
+        <label for="politeness">Politeness</label>
+        <select name="politeness" id="politeness">
+          <option value="polite">Polite</option>
+          <option value="assertive">Assertive</option>
+        </select>
+        <button type="submit" id="speakBtn">📢Speak</button>
+      </form>
+    </div>
   </body>
 </html>
