@@ -1,6 +1,6 @@
-# SR Speak
+# 📢 SR Speak
 
-`sr-speak` provides a utility function that utilises ARIA live regions
+`sr-speak` provides utilities that utilises ARIA live regions to help screen reader users hear updates happened on the page.
 
 ## Install
 
