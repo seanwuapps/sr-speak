@@ -67,28 +67,35 @@ let srSpeakOptions = {
 /**
  * Append visually hidden aria live regions to the body
  */
-export const init = (options?: Options) => {
+export const setupSpeaker = (options?: Options) => {
   srSpeakOptions = { ...srSpeakOptions, ...options };
-  createLiveRegion("polite", srSpeakOptions.liveRegionPrefix);
-  createLiveRegion("assertive", srSpeakOptions.liveRegionPrefix);
+  const polite = createLiveRegion("polite", srSpeakOptions.liveRegionPrefix);
+  const assertive = createLiveRegion(
+    "assertive",
+    srSpeakOptions.liveRegionPrefix
+  );
+  return {
+    polite,
+    assertive,
+  };
 };
 
 export const speak = debounce(
   (text: string, politeness: Politeness = "polite") => {
-    const liveRegion = document.getElementById(
+    let liveRegion = document.getElementById(
       `${srSpeakOptions.liveRegionPrefix}${politeness}`
     );
-    if (liveRegion) {
-      liveRegion.textContent = text;
-
-      setTimeout(() => {
-        liveRegion.innerHTML = "";
-      }, srSpeakOptions.clearContentTimeout);
-    } else {
-      console.warn(
-        `[sr-speak] Live region ${srSpeakOptions.liveRegionPrefix}${politeness} not found.`
-      );
+    if (!liveRegion) {
+      // first time?
+      const regions = setupSpeaker();
+      liveRegion = regions[politeness];
     }
+
+    liveRegion.textContent = text;
+
+    setTimeout(() => {
+      liveRegion.innerHTML = "";
+    }, srSpeakOptions.clearContentTimeout);
   },
   srSpeakOptions.speakDebounce
 );
