@@ -1,12 +1,13 @@
 export type Politeness = "polite" | "assertive";
+const DEFAULT_OPTIONS = {
+  liveRegionPrefix: "sr-speak-",
+  clearContentTimeout: 500,
+  speakDebounce: 200,
+};
 
-const ID_PREFIX = "sr-speak-";
-const SR_RECOGNITION_DELAY = 500; // leave content in DOM long enough for SR to pick up before clearing the content
-const SPEAK_DEBOUNCE = 300;
-
-const createLiveRegion = (politeness: Politeness) => {
+const createLiveRegion = (politeness: Politeness, prefix: string) => {
   const liveRegion = document.createElement("div");
-  liveRegion.id = `${ID_PREFIX}${politeness}`;
+  liveRegion.id = `${prefix}${politeness}`;
   liveRegion.setAttribute("aria-live", politeness);
   // each time a partical update happens, the entire content will be announced in full.
   liveRegion.setAttribute("aria-atomic", "true");
@@ -34,28 +35,60 @@ const debounce = (callback, wait) => {
   };
 };
 
+export interface Options {
+  /**
+   * prefix for ids of the live region elements
+   *
+   * default: "sr-speak-"
+   */
+  liveRegionPrefix?: string;
+  /**
+   * how long (in ms) to wait for screen readers to pick up the content,
+   * after which content is cleared for next speak call
+   *
+   * default: 500
+   */
+  clearContentTimeout?: number;
+  /**
+   * debounce so when multiple speak calls happen at the same time
+   * only last one is announced
+   *
+   * set to 0 to disable debounce
+   *
+   * default: 200
+   */
+  speakDebounce?: number;
+}
+
+let srSpeakOptions = {
+  ...DEFAULT_OPTIONS,
+};
+
 /**
  * Append visually hidden aria live regions to the body
  */
-export const init = () => {
-  createLiveRegion("polite");
-  createLiveRegion("assertive");
+export const init = (options?: Options) => {
+  srSpeakOptions = { ...srSpeakOptions, ...options };
+  createLiveRegion("polite", srSpeakOptions.liveRegionPrefix);
+  createLiveRegion("assertive", srSpeakOptions.liveRegionPrefix);
 };
 
 export const speak = debounce(
   (text: string, politeness: Politeness = "polite") => {
-    const liveRegion = document.getElementById(`${ID_PREFIX}${politeness}`);
+    const liveRegion = document.getElementById(
+      `${srSpeakOptions.liveRegionPrefix}${politeness}`
+    );
     if (liveRegion) {
       liveRegion.textContent = text;
 
       setTimeout(() => {
         liveRegion.innerHTML = "";
-      }, SR_RECOGNITION_DELAY);
+      }, srSpeakOptions.clearContentTimeout);
     } else {
       console.warn(
-        `[sr-speak] Live region ${ID_PREFIX}${politeness} not found.`
+        `[sr-speak] Live region ${srSpeakOptions.liveRegionPrefix}${politeness} not found.`
       );
     }
   },
-  SPEAK_DEBOUNCE
+  srSpeakOptions.speakDebounce
 );

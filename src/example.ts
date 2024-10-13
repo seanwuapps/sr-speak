@@ -1,7 +1,12 @@
 import { init, speak } from "./lib";
 import type { Politeness } from "./lib";
 
-init();
+init({
+  liveRegionPrefix: "example-",
+  clearContentTimeout: 0,
+  speakDebounce: 0,
+});
+
 const form = document.querySelector("form") as HTMLFormElement;
 form.addEventListener("submit", (event) => {
   event.preventDefault();
