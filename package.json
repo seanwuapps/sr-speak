@@ -1,6 +1,10 @@
 {
   "name": "sr-speak",
   "keywords": ["a11y","screen reader","aria","live region","announce"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/seanwuapps/sr-speak"
+  },
   "files": ["dist"],
   "main": "./dist/sr-speak.umd.cjs",
   "module": "./dist/sr-speak.js",  
