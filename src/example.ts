@@ -1,5 +1,8 @@
-import { speak } from "./lib";
+import { setupSpeaker, speak } from "./lib";
 import type { Politeness } from "./lib";
+
+// setup on page load so live regions are in the DOM by the time we call `speak` function
+setupSpeaker();
 
 const form = document.querySelector("form") as HTMLFormElement;
 form.addEventListener("submit", (event) => {
